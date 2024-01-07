@@ -1,13 +1,15 @@
 import app from "./app.js";
 import { authenticated, syncUp } from "./config/database/database.js";
+import { initModel } from "./config/database/initMode.js";
 import { envs } from "./config/environments/environments.js";
 
 async function main() {
   try {
     await authenticated();
+    initModel();
     await syncUp();
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 

@@ -7,7 +7,11 @@ import {
   updateUser,
   login,
 } from "./users.controller.js";
-import { protect } from "./users.middleware.js";
+import {
+  protect,
+  protectAccountOwner,
+  validExistUser,
+} from "./users.middleware.js";
 
 export const router = express.Router();
 
@@ -16,5 +20,10 @@ router.post("/login", login);
 router.route("/").get(protect, findAllUsers).post(createUser);
 
 router.use(protect);
+router.use("/:id", validExistUser);
 
-router.route("/:id").get(findOneUser).patch(updateUser).delete(deleteUser);
+router
+  .route("/:id")
+  .get(findOneUser)
+  .patch(protectAccountOwner, updateUser)
+  .delete(protectAccountOwner, deleteUser);

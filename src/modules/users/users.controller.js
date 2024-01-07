@@ -30,8 +30,6 @@ export const login = catchAsync(async (req, res, next) => {
   });
 });
 
-
-
 export const findAllUsers = async (req, res) => {
   try {
     const users = await UserService.findAll();
@@ -69,42 +67,16 @@ export const createUser = async (req, res) => {
   }
 };
 
-export const findOneUser = async (req, res) => {
-  try {
-    const { id } = req.params;
+export const findOneUser = catchAsync(async (req, res, next) => {
+  const { user } = req;
 
-    const user = await UserService.findOne(id);
-
-    if (!user) {
-      return res.status(404).json({
-        status: "error",
-        message: "user not found",
-      });
-    }
-
-    return res.status(200).json(user);
-  } catch (error) {
-    return res.status(500).json({
-      status: "fail",
-      message: "Something went very wrong! 🧨",
-    });
-  }
-};
+  return res.status(200).json(user);
+});
 
 export const updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
-
     const { name, email } = req.body;
-
-    const user = await UserService.findOne(id);
-
-    if (!user) {
-      return res.status(404).json({
-        status: "error",
-        message: "user not found",
-      });
-    }
+    const { user } = req;
 
     const userUpdated = await UserService.update(user, { name, email });
 
@@ -119,21 +91,13 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    const user = await UserService.findOne(id);
-
-    if (!user) {
-      return res.status(404).json({
-        status: "error",
-        message: "user not found",
-      });
-    }
+    const { user } = req;
 
     await UserService.delete(user);
 
     return res.status(204).json(null);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: "fail",
       message: "Something went very wrong! 🧨",

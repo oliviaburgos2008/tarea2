@@ -1,3 +1,4 @@
+import User from "../users/users.model.js";
 import Repair from "./repairs.model.js";
 
 export class RepairService {
@@ -13,8 +14,13 @@ export class RepairService {
   static async findAll() {
     return await Repair.findAll({
       where: {
-        status: "pending",
+        status: ["pending", "completed"],
       },
+      include: [
+        {
+          model: User,
+        },
+      ],
     });
   }
 
